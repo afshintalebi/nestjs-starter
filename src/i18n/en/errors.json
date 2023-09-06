@@ -1,0 +1,8 @@
+{
+    "INVALID_AUTHENTICATION": "username or password is invalid",
+    "USER_NOT_FOUND": "user not found",
+    "EMAIL_EXISTS": "this email used by another user",
+    "CODE_IS_INVALID": "code is invalid",
+    "INVALID_CURRENT_PASSWORD": "current and new password must not be the same",
+    "WRONG_CURRENT_PASSWORD": "current passsowrd is wrong"
+}
