@@ -17,7 +17,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "compodoc": "npx @compodoc/compodoc -p tsconfig.json -s"
   },
   "dependencies": {
     "@fastify/csrf-protection": "^6.3.0",
@@ -32,9 +33,7 @@
     "@nestjs/jwt": "^10.1.0",
     "@nestjs/mongoose": "^10.0.0",
     "@nestjs/passport": "^10.0.0",
-    "@nestjs/platform-express": "^10.0.0",
     "@nestjs/platform-fastify": "^10.0.3",
-    "@nestjs/schedule": "^3.0.1",
     "@nestjs/swagger": "^7.0.4",
     "@nestjs/terminus": "^10.0.1",
     "@nestjs/throttler": "^4.1.0",
