@@ -4,6 +4,13 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
+import {
+  AcceptLanguageResolver,
+  HeaderResolver,
+  I18nModule,
+  QueryResolver,
+} from 'nestjs-i18n';
+import { join } from 'path';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { CommonModule } from './common/common.module';
@@ -21,13 +28,7 @@ import { CoreModule } from './core/core.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { UtilsService } from './common/utils/utils.service';
 import { UtilsModule } from './common/utils/utils.module';
-import {
-  AcceptLanguageResolver,
-  HeaderResolver,
-  I18nModule,
-  QueryResolver,
-} from 'nestjs-i18n';
-import { join } from 'path';
+
 
 @Module({
   imports: [
