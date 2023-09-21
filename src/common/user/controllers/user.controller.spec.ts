@@ -1,10 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
-import { getDefaultImportsOfAppModule } from '@/../test/test-utils';
-import { UserAdminService } from '../services/user.admin.service';
+import {
+  getUserModuleTestConfigs,
+} from '@/../test/test-utils';
 import { UserService } from '../services/user.service';
-import { UtilsModule } from '@/common/utils/utils.module';
-import { CqrsModule } from '@nestjs/cqrs';
 import { ChangePasswordDto } from '../dto/change-password.dto';
 
 describe('UserController', () => {
@@ -12,11 +11,9 @@ describe('UserController', () => {
   let service: UserService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [...getDefaultImportsOfAppModule(), CqrsModule, UtilsModule],
-      controllers: [UserController],
-      providers: [UserService, UserAdminService],
-    }).compile();
+    const module: TestingModule = await Test.createTestingModule(
+      getUserModuleTestConfigs(),
+    ).compile();
 
     controller = module.get<UserController>(UserController);
     service = module.get<UserService>(UserService);
