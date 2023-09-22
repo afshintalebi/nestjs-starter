@@ -6,7 +6,7 @@ import { UserEntity } from '@/shared/entities/user.entity';
 import { JwtAdminRefreshTokenGuard } from '../guards/auth-admin-refresh-token.guard';
 import { GetUser } from '@/shared/decorators/get-user.decorator';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
-import { AuthAdminService } from '../services/auth.admin.service';
+import { AuthAdminService } from '../services/auth-admin.service';
 import { JwtAdminAuthenticationGuard } from '@/shared/guards/admin-auth.guard';
 import { GeneralResponse } from '@/shared/entities/general-response';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
