@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { UserService } from './services/user.service';
 import { UserController } from './controllers/user.controller';
-import { UserAdminService } from './services/user.admin.service';
+import { UserAdminService } from './services/user-admin.service';
 import { CqrsModule } from '@nestjs/cqrs';
 import { UtilsModule } from '../utils/utils.module';
 import { MongooseModule } from '@nestjs/mongoose';

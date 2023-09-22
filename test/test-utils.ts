@@ -11,7 +11,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { UtilsModule } from '@/common/utils/utils.module';
 import { UserController } from '@/common/user/controllers/user.controller';
 import { UserService } from '@/common/user/services/user.service';
-import { UserAdminService } from '@/common/user/services/user.admin.service';
+import { UserAdminService } from '@/common/user/services/user-admin.service';
 
 export function getDefaultImportsOfAppModule() {
   return [
