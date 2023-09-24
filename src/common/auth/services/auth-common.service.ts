@@ -171,7 +171,7 @@ export class AuthCommonService {
   ) {
     const fieldName = isAdmin ? 'adminRefreshToken' : 'refreshToken';
     return this.userService.updateUser(userId, {
-      [fieldName]: await this.utilsService.hashValue(refreshToken),
+      [fieldName]: this.utilsService.hashValue(refreshToken),
     });
   }
 }
