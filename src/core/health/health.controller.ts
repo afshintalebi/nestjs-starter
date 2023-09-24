@@ -36,7 +36,7 @@ export class HealthController {
 
   @Get('disk')
   @HealthCheck()
-  check() {
+  checkDisk() {
     return this.health.check([
       // The used disk storage should not exceed 90% of the full disk size
       () =>

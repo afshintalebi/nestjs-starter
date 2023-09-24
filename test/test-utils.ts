@@ -27,6 +27,8 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '@/common/user/schemas/user.schema';
+import { TerminusModule } from '@nestjs/terminus';
+import { HealthController } from '@/core/health/health.controller';
 
 let mongod;
 
@@ -117,5 +119,12 @@ export async function getAuthModuleTestConfigs() {
       JwtAdminStrategy,
       JwtAdminRefreshStrategy,
     ],
+  };
+}
+
+export function getHealthModuleTestConfigs() {
+  return {
+    imports: [TerminusModule],
+    controllers: [HealthController],
   };
 }
