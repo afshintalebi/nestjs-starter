@@ -56,7 +56,7 @@ export class AuthController {
   @Patch('reset-password')
   async resetPassword(
     @Body() data: ResetPasswordDto,
-  ): Promise<ResetPasswordEntity> {
+  ): Promise<GeneralResponse> {
     return this.service.resetPassword(data);
   }
 
