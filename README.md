@@ -47,3 +47,8 @@ $ npm run test
 $ npm run compodoc
 ```
 
+## Tasks
+- [ ] E2E tests
+  - [ ] Jest
+  - [ ] Postman
+- [ ] Config docker-compose
