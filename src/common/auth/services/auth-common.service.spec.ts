@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EventBus } from '@nestjs/cqrs';
 import { ObjectId } from 'mongodb';
 import { AuthCommonService } from './auth-common.service';
 import { UserService } from '@/common/user/services/user.service';
@@ -12,7 +11,6 @@ import { JwtService } from '@nestjs/jwt';
 
 describe('AuthCommonService', () => {
   let service: AuthCommonService;
-  let eventBus: EventBus;
   let userService: UserService;
   let utilsService: UtilsService;
   let jwtService: JwtService;
@@ -24,13 +22,12 @@ describe('AuthCommonService', () => {
     ).compile();
 
     service = module.get<AuthCommonService>(AuthCommonService);
-    eventBus = module.get<EventBus>(EventBus);
     userService = module.get<UserService>(UserService);
     utilsService = module.get<UtilsService>(UtilsService);
     jwtService = module.get<JwtService>(JwtService);
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await stopMongoDbServer();
   });
 

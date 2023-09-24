@@ -32,7 +32,7 @@ describe('AuthAdminService', () => {
     utilsService = module.get<UtilsService>(UtilsService);
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await stopMongoDbServer();
   });
 
