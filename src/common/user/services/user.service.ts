@@ -16,6 +16,8 @@ import { GeneralResponse } from '@/shared/entities/general-response';
 import { ChangePasswordDto } from '../dto/change-password.dto';
 import { ResetPasswordData } from '../types/reset-password-data';
 import { ConfigService } from '@nestjs/config';
+import { AdminUserData } from '../types/create-admin-data';
+import { CreateAdminCommand } from '../commands/impl/create-admin.command';
 
 @Injectable()
 export class UserService {
@@ -25,6 +27,23 @@ export class UserService {
     private readonly utilsService: UtilsService,
     private readonly configService: ConfigService,
   ) {}
+
+  // TODO add unit test
+  async createAdmin(data: AdminUserData): Promise<UserEntity> {
+    const copyOfData = { ...data };
+
+    copyOfData.password = await this.utilsService.bcrypeHash(
+      copyOfData.password,
+    );
+
+    copyOfData.isAdmin = true;
+
+    const user = await this.commandBus.execute(
+      new CreateAdminCommand(copyOfData),
+    );
+
+    return this.serializeUserData(user);
+  }
 
   async create(data: SignUpDto): Promise<UserEntity> {
     const copyOfData = { ...data };

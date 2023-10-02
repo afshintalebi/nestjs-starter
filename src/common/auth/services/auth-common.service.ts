@@ -2,15 +2,20 @@ import { UserDocument } from '@/common/user/schemas/user.schema';
 import { UserService } from '@/common/user/services/user.service';
 import { UtilsService } from '@/common/utils/utils.service';
 import { UserEntity } from '@/shared/entities/user.entity';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  OnApplicationBootstrap,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtPayloadInterface } from '../types/jwt-payload.interface';
 import { SignInPayloadInterface } from '../types/signin.payload';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { JwtTokensInterface } from '../types/jwt-tokens.interface';
+import * as AdminData from '../json/admin.json';
 
 @Injectable()
-export class AuthCommonService {
+export class AuthCommonService implements OnApplicationBootstrap {
   constructor(
     private readonly userService: UserService,
     private readonly utilsService: UtilsService,
@@ -18,9 +23,30 @@ export class AuthCommonService {
     private readonly configService: ConfigService,
   ) {}
 
+  onApplicationBootstrap() {
+    this.initialAdminUser();
+  }
+
+  // TODO add unit test
+  async initialAdminUser() {
+    const { email, name, password } = AdminData;
+
+    const adminUser = await this.userService.getUserByEmail(email);
+
+    if (!adminUser) {
+      this.userService.createAdmin({
+        email,
+        name,
+        password,
+      });
+    }
+  }
+
   async checkUser(email: string, password: string): Promise<UserDocument> {
     const throwError = () => {
-      throw new UnauthorizedException(this.utilsService.t('errors.INVALID_AUTHENTICATION'));
+      throw new UnauthorizedException(
+        this.utilsService.t('errors.INVALID_AUTHENTICATION'),
+      );
     };
 
     // check email & password
