@@ -16,17 +16,18 @@ import { JwtAuthenticationGuard } from '@/shared/guards/auth.guard';
 import { GeneralResponse } from '@/shared/entities/general-response';
 import { AuthGuard } from '@nestjs/passport';
 import { RequestInterface } from '@/shared/types/request.interface';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { SignUpDto } from '../../../shared/dto/signup.dto';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
-import { ResetPasswordEntity } from '../entities/reset-password.entity';
 import { ConfirmResetPasswordDto } from '../dto/confirm-reset-password.dto';
+import { SignInDto } from '../dto/signin.dto';
 
 @ApiTags('client', 'auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly service: AuthService) {}
 
+  @ApiBody({ type: SignInDto })
   @UseGuards(AuthGuard('local'))
   @Post('sign-in')
   async signIn(@Req() req: RequestInterface): Promise<UserEntity> {
