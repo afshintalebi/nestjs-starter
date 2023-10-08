@@ -27,7 +27,6 @@ export class AuthAdminService {
       user.email,
       true,
     );
-
     if (userInfo) {
       return this.commonService.getNewAccessAndRefreshToken(userInfo, true);
     } else {

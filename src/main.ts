@@ -52,9 +52,8 @@ const applySwagger = async (app, configService) => {
   }
 
   const config = new DocumentBuilder()
-    .setTitle('Exchange API')
-    .setDescription('APIs of exchange')
-    .setVersion('1.0')
+    .setTitle('APIs list')
+    .setDescription('APIs list')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
