@@ -1,0 +1,2323 @@
+{
+	"info": {
+		"_postman_id": "28a47645-ba45-42af-a7ec-588ea7b4989f",
+		"name": "NestJS-Starter",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2480669"
+	},
+	"item": [
+		{
+			"name": "General",
+			"item": [
+				{
+					"name": "Pass V1 root route",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"should return version of API\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{v1host}}",
+							"host": [
+								"{{v1host}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fail Accept Language",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									"",
+									"pm.request.headers.remove(\"accept-language\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/health/db",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"health",
+								"db"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "SignUp",
+					"item": [
+						{
+							"name": "Pass User SignUp",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const email = `sample_${new Date().getTime()}@domain.com`;",
+											"const name = 'User Full Name';",
+											"const password = 'sdf@9m#MLsd83';",
+											"",
+											"pm.environment.set(\"userEmail\", email);",
+											"pm.environment.set(\"userFullName\", name);",
+											"pm.environment.set(\"userPassword\", password);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"should pass sign-up of user\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"name\": \"{{userFullName}}\",\n  \"password\": \"{{userPassword}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{v1host}}/auth/sign-up",
+									"host": [
+										"{{v1host}}"
+									],
+									"path": [
+										"auth",
+										"sign-up"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fail User SignUp - Empty Email",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"email is empty\", function () {",
+											"  pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"\",\n  \"name\": \"{{userFullName}}\",\n  \"password\": \"{{userPassword}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{v1host}}/auth/sign-up",
+									"host": [
+										"{{v1host}}"
+									],
+									"path": [
+										"auth",
+										"sign-up"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fail User SignUp - Invalid Email Address",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"email address is invalid\", function () {",
+											"  pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"sample.domain.com\",\n  \"name\": \"{{userFullName}}\",\n  \"password\": \"{{userPassword}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{v1host}}/auth/sign-up",
+									"host": [
+										"{{v1host}}"
+									],
+									"path": [
+										"auth",
+										"sign-up"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fail User SignUp - Email Exist",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"email registered already\", function () {",
+											"  pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"name\": \"{{userFullName}}\",\n  \"password\": \"{{userPassword}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{v1host}}/auth/sign-up",
+									"host": [
+										"{{v1host}}"
+									],
+									"path": [
+										"auth",
+										"sign-up"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fail User SignUp - Empty Name",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"name is empty\", function () {",
+											"  pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"name\": \"\",\n  \"password\": \"{{userPassword}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{v1host}}/auth/sign-up",
+									"host": [
+										"{{v1host}}"
+									],
+									"path": [
+										"auth",
+										"sign-up"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fail User SignUp - Empty Password",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"password is empty\", function () {",
+											"  pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"name\": \"{{userFullName}}\",\n  \"password\": \"\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{v1host}}/auth/sign-up",
+									"host": [
+										"{{v1host}}"
+									],
+									"path": [
+										"auth",
+										"sign-up"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fail User SignUp - Week Password",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"password is weak\", function () {",
+											"  pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"name\": \"{{userFullName}}\",\n  \"password\": \"1234567\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{v1host}}/auth/sign-up",
+									"host": [
+										"{{v1host}}"
+									],
+									"path": [
+										"auth",
+										"sign-up"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "SignIn",
+					"item": [
+						{
+							"name": "User",
+							"item": [
+								{
+									"name": "Pass User SignIn",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"user signed-in\", function () {",
+													"    pm.response.to.have.status(201);",
+													"",
+													"    const userEmail = pm.environment.get(\"userEmail\");",
+													"    const userFullName = pm.environment.get(\"userFullName\");",
+													"    const data = pm.response.json();",
+													"",
+													"    pm.expect(data).to.have.property('id')",
+													"    pm.expect(data).to.have.property('email')",
+													"    pm.expect(data).to.have.property('name')",
+													"    pm.expect(data).to.have.property('token')",
+													"    pm.expect(data).to.have.property('refreshToken')",
+													"    pm.expect(data.id).to.not.eq(null);",
+													"    pm.expect(data.id).to.not.eq(\"\");",
+													"    pm.expect(data.email).to.eq(userEmail);",
+													"    pm.expect(data.name).to.eq(userFullName);",
+													"    pm.expect(data.token).to.not.eq(null);",
+													"    pm.expect(data.token).to.not.eq(\"\");",
+													"    pm.expect(data.refreshToken).to.not.eq(null);",
+													"    pm.expect(data.refreshToken).to.not.eq(\"\");",
+													"",
+													"",
+													"    pm.environment.set(\"userToken\", data.token);",
+													"    pm.environment.set(\"userRefreshToken\", data.refreshToken);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"password\": \"{{userPassword}}\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{v1host}}/auth/sign-in",
+											"host": [
+												"{{v1host}}"
+											],
+											"path": [
+												"auth",
+												"sign-in"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Fail User SignIn",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"failed sign-in\", function () {",
+													"    pm.response.to.have.status(401);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"email\": \"sample_user@domain.com\",\n  \"password\": \"123456\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{v1host}}/auth/sign-in",
+											"host": [
+												"{{v1host}}"
+											],
+											"path": [
+												"auth",
+												"sign-in"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Fail User SignIn - Empty Email",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"email is empty\", function () {",
+													"    pm.response.to.have.status(401);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"email\": \"\",\n  \"password\": \"123456\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{v1host}}/auth/sign-in",
+											"host": [
+												"{{v1host}}"
+											],
+											"path": [
+												"auth",
+												"sign-in"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Fail User SignIn - Invalid Email",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"email is invalid\", function () {",
+													"    pm.response.to.have.status(401);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"email\": \"sampleUser.domain.com\",\n  \"password\": \"123456\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{v1host}}/auth/sign-in",
+											"host": [
+												"{{v1host}}"
+											],
+											"path": [
+												"auth",
+												"sign-in"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Fail User SignIn - Empty Password",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"password is empty\", function () {",
+													"    pm.response.to.have.status(401);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"email\": \"sampleUser@domain.com\",\n  \"password\": \"\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{v1host}}/auth/sign-in",
+											"host": [
+												"{{v1host}}"
+											],
+											"path": [
+												"auth",
+												"sign-in"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Pass User Refresh Token",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"refreshed user token\", function () {",
+													"    pm.response.to.have.status(201);",
+													"",
+													"    const userEmail = pm.environment.get(\"userEmail\");",
+													"    const userFullName = pm.environment.get(\"userFullName\");",
+													"    const userLastRefreshToken = pm.environment.get(\"userRefreshToken\");",
+													"    const data = pm.response.json();",
+													"",
+													"    pm.expect(data).to.have.property('id')",
+													"    pm.expect(data).to.have.property('email')",
+													"    pm.expect(data).to.have.property('name')",
+													"    pm.expect(data).to.have.property('token')",
+													"    pm.expect(data).to.have.property('refreshToken')",
+													"    pm.expect(data.id).to.not.eq(null);",
+													"    pm.expect(data.id).to.not.eq(\"\");",
+													"    pm.expect(data.email).to.eq(userEmail);",
+													"    pm.expect(data.name).to.eq(userFullName);",
+													"    pm.expect(data.token).to.not.eq(null);",
+													"    pm.expect(data.token).to.not.eq(\"\");",
+													"    pm.expect(data.refreshToken).to.not.eq(null);",
+													"    pm.expect(data.refreshToken).to.not.eq(\"\");",
+													"",
+													"",
+													"    pm.environment.set(\"userToken\", data.token);",
+													"    pm.environment.set(\"userRefreshToken\", data.refreshToken);",
+													"    pm.environment.set(\"userLastRefreshToken\", userLastRefreshToken);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"refreshToken\": \"{{userRefreshToken}}\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{v1host}}/auth/refresh-token",
+											"host": [
+												"{{v1host}}"
+											],
+											"path": [
+												"auth",
+												"refresh-token"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Fail User Refresh Token - Empty Token",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"refreshed user token\", function () {",
+													"    pm.response.to.have.status(401);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"refreshToken\": \"\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{v1host}}/auth/refresh-token",
+											"host": [
+												"{{v1host}}"
+											],
+											"path": [
+												"auth",
+												"refresh-token"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Admin",
+							"item": [
+								{
+									"name": "Pass Admin SignIn",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"admin signed-in\", function () {",
+													"    pm.response.to.have.status(201);",
+													"",
+													"    const userEmail = pm.environment.get(\"adminEmail\");",
+													"    const userFullName = pm.environment.get(\"adminFullName\");",
+													"    const data = pm.response.json();",
+													"",
+													"    pm.expect(data).to.have.property('id')",
+													"    pm.expect(data).to.have.property('email')",
+													"    pm.expect(data).to.have.property('name')",
+													"    pm.expect(data).to.have.property('token')",
+													"    pm.expect(data).to.have.property('refreshToken')",
+													"    pm.expect(data).to.have.property('isAdmin')",
+													"    pm.expect(data.id).to.not.eq(null);",
+													"    pm.expect(data.id).to.not.eq(\"\");",
+													"    pm.expect(data.email).to.eq(userEmail);",
+													"    pm.expect(data.name).to.eq(userFullName);",
+													"    pm.expect(data.token).to.not.eq(null);",
+													"    pm.expect(data.token).to.not.eq(\"\");",
+													"    pm.expect(data.refreshToken).to.not.eq(null);",
+													"    pm.expect(data.refreshToken).to.not.eq(\"\");",
+													"    pm.expect(data.isAdmin).to.eq(true);",
+													"",
+													"    pm.environment.set(\"adminUserToken\", data.token);",
+													"    pm.environment.set(\"adminUserRefreshToken\", data.refreshToken);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{adminHost}}/auth/sign-in",
+											"host": [
+												"{{adminHost}}"
+											],
+											"path": [
+												"auth",
+												"sign-in"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Fail Admin SignIn - Empty Email",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"admin eail is required\", function () {",
+													"    pm.response.to.have.status(401);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"email\": \"\",\n  \"password\": \"{{adminPassword}}\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{adminHost}}/auth/sign-in",
+											"host": [
+												"{{adminHost}}"
+											],
+											"path": [
+												"auth",
+												"sign-in"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Fail Admin SignIn - Wrong Email",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"email of admin is invalid\", function () {",
+													"    pm.response.to.have.status(401);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"email\": \"test@domain.com\",\n  \"password\": \"{{adminPassword}}\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{adminHost}}/auth/sign-in",
+											"host": [
+												"{{adminHost}}"
+											],
+											"path": [
+												"auth",
+												"sign-in"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Pass Admin Refresh Token",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"refreshed admin token\", function () {",
+													"    pm.response.to.have.status(201);",
+													"",
+													"    const userEmail = pm.environment.get(\"adminEmail\");",
+													"    const userFullName = pm.environment.get(\"adminFullName\");",
+													"    const userLastRefreshToken = pm.environment.get(\"adminUserRefreshToken\");",
+													"    const data = pm.response.json();",
+													"",
+													"    pm.expect(data).to.have.property('id')",
+													"    pm.expect(data).to.have.property('email')",
+													"    pm.expect(data).to.have.property('name')",
+													"    pm.expect(data).to.have.property('token')",
+													"    pm.expect(data).to.have.property('refreshToken')",
+													"    pm.expect(data).to.have.property('isAdmin')",
+													"    pm.expect(data.id).to.not.eq(null);",
+													"    pm.expect(data.id).to.not.eq(\"\");",
+													"    pm.expect(data.email).to.eq(userEmail);",
+													"    pm.expect(data.name).to.eq(userFullName);",
+													"    pm.expect(data.token).to.not.eq(null);",
+													"    pm.expect(data.token).to.not.eq(\"\");",
+													"    pm.expect(data.refreshToken).to.not.eq(null);",
+													"    pm.expect(data.refreshToken).to.not.eq(\"\");",
+													"    pm.expect(data.isAdmin).to.eq(true);",
+													"",
+													"",
+													"    pm.environment.set(\"adminUserToken\", data.token);",
+													"    pm.environment.set(\"adminUserRefreshToken\", data.refreshToken);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"refreshToken\": \"{{adminUserRefreshToken}}\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{adminHost}}/auth/refresh-token",
+											"host": [
+												"{{adminHost}}"
+											],
+											"path": [
+												"auth",
+												"refresh-token"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Fail Admin Refresh Token - Empty token",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"admin token is empty\", function () {",
+													"    pm.response.to.have.status(401);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"refreshToken\": \"\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{adminHost}}/auth/refresh-token",
+											"host": [
+												"{{adminHost}}"
+											],
+											"path": [
+												"auth",
+												"refresh-token"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Fail Admin Refresh Token - Invalid token",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"admin token is invalid\", function () {",
+													"    pm.response.to.have.status(401);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"refreshToken\": \"sdfjk23478sdujfhkj23h*&@#kjsfhskjdf\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{adminHost}}/auth/refresh-token",
+											"host": [
+												"{{adminHost}}"
+											],
+											"path": [
+												"auth",
+												"refresh-token"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Password",
+			"item": [
+				{
+					"name": "Pass Reset Password Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"pass reset password request\", function () {",
+									"    pm.response.to.have.status(200);",
+									"",
+									"    const data = pm.response.json();",
+									"",
+									"    pm.expect(data).to.have.property('result')",
+									"    pm.expect(data.result).to.eq(true);",
+									"",
+									"    pm.environment.set('resetPasswordCode', data.code);",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{userEmail}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{v1host}}/auth/reset-password",
+							"host": [
+								"{{v1host}}"
+							],
+							"path": [
+								"auth",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fail Reset Password Request - Empty Email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"email is empty\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{v1host}}/auth/reset-password",
+							"host": [
+								"{{v1host}}"
+							],
+							"path": [
+								"auth",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fail Reset Password Request - Wrong Email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"email is invalid\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"email@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{v1host}}/auth/reset-password",
+							"host": [
+								"{{v1host}}"
+							],
+							"path": [
+								"auth",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pass Confirm Reset Password Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"pass reset password request\", function () {",
+									"    pm.response.to.have.status(200);",
+									"",
+									"    const data = pm.response.json();",
+									"",
+									"    pm.expect(data).to.have.property('result')",
+									"    pm.expect(data.result).to.eq(true);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"code\": \"{{resetPasswordCode}}\",\n  \"password\": \"{{userPassword}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{v1host}}/auth/reset-password/confirm",
+							"host": [
+								"{{v1host}}"
+							],
+							"path": [
+								"auth",
+								"reset-password",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fail Confirm Reset Password Request - Wrong Code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"reset code is invalid\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"code\": \"341948\",\n  \"password\": \"{{userPassword}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{v1host}}/auth/reset-password/confirm",
+							"host": [
+								"{{v1host}}"
+							],
+							"path": [
+								"auth",
+								"reset-password",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fail Confirm Reset Password Request - Empty Email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"email is empty\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"\",\n  \"code\": \"{{resetPasswordCode}}\",\n  \"password\": \"{{userPassword}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{v1host}}/auth/reset-password/confirm",
+							"host": [
+								"{{v1host}}"
+							],
+							"path": [
+								"auth",
+								"reset-password",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fail Confirm Reset Password Request - Empty Code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"code is invalid\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"code\": \"\",\n  \"password\": \"{{userPassword}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{v1host}}/auth/reset-password/confirm",
+							"host": [
+								"{{v1host}}"
+							],
+							"path": [
+								"auth",
+								"reset-password",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fail Confirm Reset Password Request - Empty Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"password should fill\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"code\": \"{{resetPasswordCode}}\",\n  \"password\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{v1host}}/auth/reset-password/confirm",
+							"host": [
+								"{{v1host}}"
+							],
+							"path": [
+								"auth",
+								"reset-password",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fail Confirm Reset Password Request - Wrong Email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"email is invalud\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"111@domain.com\",\n  \"code\": \"{{resetPasswordCode}}\",\n  \"password\": \"{{userPassword}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{v1host}}/auth/reset-password/confirm",
+							"host": [
+								"{{v1host}}"
+							],
+							"path": [
+								"auth",
+								"reset-password",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fail Confirm Reset Password Request - Weak Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"pass reset password request\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"code\": \"{{resetPasswordCode}}\",\n  \"password\": \"342lk293\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{v1host}}/auth/reset-password/confirm",
+							"host": [
+								"{{v1host}}"
+							],
+							"path": [
+								"auth",
+								"reset-password",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Pass Check DB",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"checl health of DB\", function () {",
+									"    pm.response.to.have.status(200);",
+									"",
+									"    const data = pm.response.json();",
+									"    ",
+									"    pm.expect(data).to.haveOwnProperty('status');",
+									"    pm.expect(data).to.haveOwnProperty('info');",
+									"    pm.expect(data).to.haveOwnProperty('error');",
+									"    pm.expect(data).to.haveOwnProperty('details');",
+									"",
+									"    // check status",
+									"    pm.expect(data.status).to.eq('ok');",
+									"    ",
+									"    // check info",
+									"    pm.expect(data['info']['mongoose']['status']).to.eq('up');",
+									"",
+									"    // check for empty error",
+									"    const keys = Object.keys(data.error);",
+									"    pm.expect(keys.length).to.eq(0);",
+									"",
+									"    // check deails",
+									"    pm.expect(data['details']['mongoose']['status']).to.eq('up');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/health/db",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"health",
+								"db"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pass Check Memory",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"checl health of Memory\", function () {",
+									"    pm.response.to.have.status(200);",
+									"",
+									"    const data = pm.response.json();",
+									"    ",
+									"    pm.expect(data).to.haveOwnProperty('status');",
+									"    pm.expect(data).to.haveOwnProperty('info');",
+									"    pm.expect(data).to.haveOwnProperty('error');",
+									"    pm.expect(data).to.haveOwnProperty('details');",
+									"",
+									"    // check status",
+									"    pm.expect(data.status).to.eq('ok');",
+									"    ",
+									"    // check info",
+									"    pm.expect(data['info']['memory_heap']['status']).to.eq('up');",
+									"    pm.expect(data['info']['memory_rss']['status']).to.eq('up');",
+									"",
+									"    // check for empty error",
+									"    const keys = Object.keys(data.error);",
+									"    pm.expect(keys.length).to.eq(0);",
+									"",
+									"    // check deails",
+									"    pm.expect(data['details']['memory_heap']['status']).to.eq('up');",
+									"    pm.expect(data['details']['memory_rss']['status']).to.eq('up');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/health/memory",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"health",
+								"memory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pass Check Disk",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"checl health of Disk\", function () {",
+									"    pm.response.to.have.status(200);",
+									"",
+									"    const data = pm.response.json();",
+									"    ",
+									"    pm.expect(data).to.haveOwnProperty('status');",
+									"    pm.expect(data).to.haveOwnProperty('info');",
+									"    pm.expect(data).to.haveOwnProperty('error');",
+									"    pm.expect(data).to.haveOwnProperty('details');",
+									"",
+									"    // check status",
+									"    pm.expect(data.status).to.eq('ok');",
+									"    ",
+									"    // check info",
+									"    pm.expect(data['info']['disk health']['status']).to.eq('up');",
+									"",
+									"    // check for empty error",
+									"    const keys = Object.keys(data.error);",
+									"    pm.expect(keys.length).to.eq(0);",
+									"",
+									"    // check deails",
+									"    pm.expect(data['details']['disk health']['status']).to.eq('up');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/health/disk",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"health",
+								"disk"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Profile",
+					"item": [
+						{
+							"name": "Pass User Profile",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"get user profile\", function () {",
+											"    pm.response.to.have.status(200);",
+											"",
+											"    const data = pm.response.json();",
+											"    pm.expect(data).to.have.property('id');",
+											"    pm.expect(data).to.have.property('email');",
+											"    pm.expect(data).to.have.property('name');",
+											"",
+											"    pm.expect(data.id).to.not.eq(\"\")",
+											"    pm.expect(data.email).to.not.eq(\"\")",
+											"    pm.expect(data.name).to.not.eq(\"\")",
+											"",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{v1host}}/user/profile",
+									"host": [
+										"{{v1host}}"
+									],
+									"path": [
+										"user",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fail User Profile - No Authorization",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"failed to get user profile\", function () {",
+											"    pm.response.to.have.status(401);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.request.headers.remove(\"authorization\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{v1host}}/user/profile",
+									"host": [
+										"{{v1host}}"
+									],
+									"path": [
+										"user",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.request.headers.add({",
+									"  key: \"authorization\",",
+									"  value: \"Bearer {{userToken}}\"",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Change Password",
+					"item": [
+						{
+							"name": "Fail User Change Password - Empty Current Password",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.request.headers.add({",
+											"  key: \"authorization\",",
+											"  value: \"Bearer {{userToken}}\"",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"current password is wrong\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"currentPassword\": \"1237641236\",\n  \"newPassword\": \"{{newPassword}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{v1host}}/user/change-password",
+									"host": [
+										"{{v1host}}"
+									],
+									"path": [
+										"user",
+										"change-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fail User Change Password - Empty New Password",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.request.headers.add({",
+											"  key: \"authorization\",",
+											"  value: \"Bearer {{userToken}}\"",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"current password is wrong\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"currentPassword\": \"{{userPassword}}\",\n  \"newPassword\": \"\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{v1host}}/user/change-password",
+									"host": [
+										"{{v1host}}"
+									],
+									"path": [
+										"user",
+										"change-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fail User Change Password - Weak New Password",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.request.headers.add({",
+											"  key: \"authorization\",",
+											"  value: \"Bearer {{userToken}}\"",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"current password is wrong\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"currentPassword\": \"{{userPassword}}\",\n  \"newPassword\": \"123456kdf\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{v1host}}/user/change-password",
+									"host": [
+										"{{v1host}}"
+									],
+									"path": [
+										"user",
+										"change-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fail User Change Password - Wrong Current Password",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.request.headers.add({",
+											"  key: \"authorization\",",
+											"  value: \"Bearer {{userToken}}\"",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"current password is wrong\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"currentPassword\": \"\",\n  \"newPassword\": \"{{newPassword}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{v1host}}/user/change-password",
+									"host": [
+										"{{v1host}}"
+									],
+									"path": [
+										"user",
+										"change-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fail User Change Password - No Authorization",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.request.headers.remove(\"authorization\");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"change password of user\", function () {",
+											"    pm.response.to.have.status(401);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"currentPassword\": \"{{userPassword}}\",\n  \"newPassword\": \"{{newPassword}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{v1host}}/user/change-password",
+									"host": [
+										"{{v1host}}"
+									],
+									"path": [
+										"user",
+										"change-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Pass User Change Password",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.request.headers.add({",
+											"  key: \"authorization\",",
+											"  value: \"Bearer {{userToken}}\"",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"change password of user\", function () {",
+											"    pm.response.to.have.status(200);",
+											"",
+											"    const data = pm.response.json();",
+											"    pm.expect(data).to.have.property('result');",
+											"    pm.expect(data.result).to.eq(true)",
+											"",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"currentPassword\": \"{{userPassword}}\",\n  \"newPassword\": \"{{newPassword}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{v1host}}/user/change-password",
+									"host": [
+										"{{v1host}}"
+									],
+									"path": [
+										"user",
+										"change-password"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "SignOut",
+					"item": [
+						{
+							"name": "User",
+							"item": [
+								{
+									"name": "Pass User SignOut",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"sign-out user\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.request.headers.add({",
+													"  key: \"authorization\",",
+													"  value: \"Bearer {{userToken}}\"",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{v1host}}/auth/sign-out",
+											"host": [
+												"{{v1host}}"
+											],
+											"path": [
+												"auth",
+												"sign-out"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Fail User SignOut",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"failed user sign-out because of the lack of authorization header\", function () {",
+													"    pm.response.to.have.status(401);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{v1host}}/auth/sign-out",
+											"host": [
+												"{{v1host}}"
+											],
+											"path": [
+												"auth",
+												"sign-out"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Admin",
+							"item": [
+								{
+									"name": "Pass Admin SignOut",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.request.headers.add({",
+													"  key: \"authorization\",",
+													"  value: \"Bearer {{adminUserToken}}\"",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"sign-out admin\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{adminHost}}/auth/sign-out",
+											"host": [
+												"{{adminHost}}"
+											],
+											"path": [
+												"auth",
+												"sign-out"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Fail Admin SignOut",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"failed admin sign-out because of the lack of authorization header\", function () {",
+													"    pm.response.to.have.status(401);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{adminHost}}/auth/sign-out",
+											"host": [
+												"{{adminHost}}"
+											],
+											"path": [
+												"auth",
+												"sign-out"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.request.headers.add({",
+					"  key: \"accept-language\",",
+					"  value: \"{{defaultLanguage}}\"",
+					"});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

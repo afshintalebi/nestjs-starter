@@ -1,0 +1,48 @@
+name: Postman CLI
+
+# triggers
+on:
+  push:
+    # set your branch name
+    # branches:
+    #   - 'main-cicd'
+  pull_request:
+    # set your branch name
+    # branches:
+    #   - 'main'
+  # Allow to run ths workflow from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # checkout repository under $GITHU_WORKSPACE, so it is accessible by job
+      - uses: actions/checkout@v3
+      - name: Create Directory
+        run: |
+          mkdir PostmanArtifact
+
+      # insall NodeJS
+      - name: Install NodeJS
+        uses: actions/checkout@v3
+        with:
+          node-version: '18.x'
+
+      # insall newman and reporter
+      - name: Install Newman
+        run: |
+          npm i -g newman
+          npm i -g newman-reporter-htmlextra
+
+      # run collection
+      - name: Run Collection
+        run: |
+          newman run "collections/NestJS-Starter.postman_collection.json" -e "collections/NestJS-Starter.postman_environment.json" -r htmlextra --reporter-htmlextra-export PostmanArtifact/report.html
+
+      # publish the report
+      - name: Publish Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: Reports
+          path: PostmanArtifact
