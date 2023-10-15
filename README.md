@@ -55,4 +55,4 @@ You can import Postman collection and environment variables through the files lo
 - [ ] E2E tests
   - [ ] Jest
   - [x] Postman
-- [ ] Config docker-compose
+- [x] Add docker-compose file

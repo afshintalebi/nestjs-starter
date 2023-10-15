@@ -1,0 +1,41 @@
+version: '3.9'
+services:
+  nestjs-starter-api:
+    container_name: nestjs-starter-api
+    image: nestjs-starter-api:1.0.0
+    build:
+      context: .
+      target: development
+      dockerfile: ./Dockerfile
+    command: npm run start:dev
+    ports:
+      - 3001:3001
+    networks:
+      - nestjs-starter-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+    restart: unless-stopped
+    depends_on:
+      - nestjs-starter-db
+    env_file:
+      - ./.env
+
+  nestjs-starter-db:
+    image: mongo:latest
+    container_name: nestjs-starter-db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+    networks:
+      - nestjs-starter-network
+    ports:
+      - 27017:27017
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/nestjs-boilerplate --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+networks:
+  nestjs-starter-network:
