@@ -1,0 +1,3 @@
+beforeAll(() => {
+  jest.useFakeTimers();
+});

@@ -124,7 +124,6 @@ describe('AuthService', () => {
       id: new ObjectId().toHexString(),
       email: 'sample@domain.com',
     };
-    const funcData: RefreshTokenDto = { refreshToken: 'refresh token data' };
 
     it('should be defined', () => {
       expect(service.signOut).toBeDefined();
@@ -148,7 +147,6 @@ describe('AuthService', () => {
       id: new ObjectId().toHexString(),
       email: 'sample@domain.com',
     };
-    const funcData: RefreshTokenDto = { refreshToken: 'refresh token data' };
 
     it('should be defined', () => {
       expect(service.createUser).toBeDefined();

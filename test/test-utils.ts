@@ -29,6 +29,14 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '@/common/user/schemas/user.schema';
 import { TerminusModule } from '@nestjs/terminus';
 import { HealthController } from '@/core/health/health.controller';
+import { CacheModule } from '@nestjs/cache-manager';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { CoreModule } from '@/core/core.module';
+import { CommonModule } from '@/common/common.module';
+import { AppController } from '@/app.controller';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { LoggingInterceptor } from '@/shared/interceptors/logging.interceptor';
+import { AllExceptionsFilter } from '@/shared/filters/all-exceptions.filter';
 
 let mongod;
 
@@ -37,15 +45,7 @@ async function getMongoDbConfig() {
 
   const uri = mongod.getUri();
 
-  return [
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri,
-      }),
-      inject: [ConfigService],
-    }),
-  ];
+  return [MongooseModule.forRoot(uri)];
 }
 
 export async function stopMongoDbServer() {
@@ -126,5 +126,42 @@ export function getHealthModuleTestConfigs() {
   return {
     imports: [TerminusModule],
     controllers: [HealthController],
+  };
+}
+
+export async function getAppModuleTestConfigs() {
+  return {
+    imports: [
+      ...getDefaultImportsOfAppModule(),
+      ...(await getMongoDbConfig()),
+      CoreModule,
+      CommonModule,
+      CqrsModule,
+      UtilsModule,
+      ConfigModule.forRoot({
+        load: [generalConfig],
+        isGlobal: true,
+        validationSchema: envValidationSchema,
+      }),
+      CacheModule.register({
+        isGlobal: true,
+      }),
+      ThrottlerModule.forRootAsync({
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: (config: ConfigService) => ({
+          ttl: config.get('throttle.ttl'),
+          limit: config.get('throttle.limit'),
+        }),
+      }),
+    ],
+    controllers: [AppController],
+    providers: [
+      { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
+      {
+        provide: APP_FILTER,
+        useClass: AllExceptionsFilter,
+      },
+    ],
   };
 }

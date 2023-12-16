@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { randomBytes, scryptSync, timingSafeEqual } from 'crypto';
-import { GeneralResponse } from '../../shared/entities/general-response';
+import { GeneralResponse } from '@/shared/entities/general-response';
 import {
   DEVELOPMENT_ENV,
   PRODUCTION_ENV,

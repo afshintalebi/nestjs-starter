@@ -15,7 +15,7 @@ export class ChangePasswordDto {
   @IsString()
   @MaxLength(32)
   currentPassword: string;
-  
+
   @ApiProperty()
   @IsDefined()
   @IsNotEmpty()

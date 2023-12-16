@@ -14,6 +14,7 @@ import * as Sentry from '@sentry/node';
 import { ObjectId } from 'mongodb';
 import { ConfigService } from '@nestjs/config';
 import { PRODUCTION_ENV, STAGING_ENV } from '../configs/constants';
+import { LANGUAGES } from '../types/languages.enum';
 /**
  * Mainly responsible to log request responses and their latency using nest Logger
  */
@@ -35,9 +36,8 @@ export class LoggingInterceptor implements NestInterceptor {
     const now = Date.now();
     const { statusCode }: FastifyReply = ctx.getResponse<FastifyReply>();
     // const { statusCode, statusMessage }: FastifyReply = ctx.getResponse<FastifyReply>(); // for express adapter
-
     const {
-      raw: { clientIP, language },
+      raw,
       user,
       method,
       url,
@@ -48,6 +48,8 @@ export class LoggingInterceptor implements NestInterceptor {
       body,
       headers,
     }: RequestInterface = ctx.getRequest();
+
+    const { clientIP = '0.0.0.1', language = LANGUAGES.EN } = raw || {};
 
     ctx.getRequest().traceId = new ObjectId();
 

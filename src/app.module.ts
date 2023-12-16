@@ -29,7 +29,6 @@ import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { UtilsService } from './common/utils/utils.service';
 import { UtilsModule } from './common/utils/utils.module';
 
-
 @Module({
   imports: [
     CommonModule,
