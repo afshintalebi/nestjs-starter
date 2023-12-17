@@ -14,11 +14,11 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest --forceExit",
-    "test:watch": "npm run test --watch",
+    "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json --detectOpenHandles --forceExit",
-    "test:watch:e2e": "npm run test:e2e --watch",
+    "test:watch:e2e": "jest --config ./test/jest-e2e.json --detectOpenHandles --watch --logHeapUsage",
     "compodoc": "npx @compodoc/compodoc -p tsconfig.json -s"
   },
   "dependencies": {

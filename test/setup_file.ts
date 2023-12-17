@@ -1,3 +1,5 @@
 beforeAll(() => {
-  jest.useFakeTimers();
+  jest.useFakeTimers({
+    timerLimit: 180000,
+  });
 });
