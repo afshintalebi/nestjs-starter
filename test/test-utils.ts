@@ -37,6 +37,8 @@ import { AppController } from '@/app.controller';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from '@/shared/interceptors/logging.interceptor';
 import { AllExceptionsFilter } from '@/shared/filters/all-exceptions.filter';
+import { INestApplication, VersioningType } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
 
 let mongod;
 
@@ -164,4 +166,24 @@ export async function getAppModuleTestConfigs() {
       },
     ],
   };
+}
+
+export async function createNestApplication(): Promise<INestApplication> {
+  let app: INestApplication;
+
+  const moduleConfigs = await getAppModuleTestConfigs();
+  const moduleFixture: TestingModule = await Test.createTestingModule(
+    moduleConfigs,
+  ).compile();
+
+  app = moduleFixture.createNestApplication();
+
+  app.enableVersioning({
+    defaultVersion: '1',
+    type: VersioningType.URI,
+  });
+
+  await app.init();
+
+  return app;
 }

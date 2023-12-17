@@ -1,19 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { getAppModuleTestConfigs, stopMongoDbServer } from './test-utils';
+import { createNestApplication, stopMongoDbServer } from './test-utils';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
-    const moduleConfigs = await getAppModuleTestConfigs();
-    const moduleFixture: TestingModule = await Test.createTestingModule(
-      moduleConfigs,
-    ).compile();
-
-    app = moduleFixture.createNestApplication();
-    await app.init();
+    app = await createNestApplication();
   });
 
   afterEach(async () => {
@@ -22,7 +16,7 @@ describe('AppController (e2e)', () => {
 
   it('/ (GET)', () => {
     return request(app.getHttpServer())
-      .get('/')
+      .get('/v1')
       .expect(200)
       .expect('API version 1');
   });
