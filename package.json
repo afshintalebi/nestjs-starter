@@ -17,8 +17,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json --detectOpenHandles --forceExit",
-    "test:watch:e2e": "jest --config ./test/jest-e2e.json --detectOpenHandles --watch --logHeapUsage",
+    "test:e2e": "jest --config ./test/jest-e2e.json --forceExit",
+    "test:watch:e2e": "jest --config ./test/jest-e2e.json --watch",
     "compodoc": "npx @compodoc/compodoc -p tsconfig.json -s"
   },
   "dependencies": {
@@ -45,6 +45,7 @@
     "cache-manager": "^5.2.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "email-validator": "^2.0.4",
     "joi": "^17.9.2",
     "moment": "^2.29.4",
     "mongoose": "^7.3.1",

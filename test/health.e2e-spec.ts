@@ -1,16 +1,12 @@
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { createNestApplication, stopMongoDbServer } from './test-utils';
+import { createNestApplication } from './test-utils';
 
 describe('HealthController (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
     app = await createNestApplication();
-  });
-
-  afterEach(async () => {
-    await stopMongoDbServer();
   });
 
   it('/health/db (GET)', async () => {
@@ -24,7 +20,6 @@ describe('HealthController (e2e)', () => {
     expect(body.error).toStrictEqual({});
     expect(body.details).toBeTruthy();
   });
-
 
   it('/health/disk (GET)', async () => {
     const { body } = await request(app.getHttpServer())

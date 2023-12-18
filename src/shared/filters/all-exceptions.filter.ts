@@ -9,7 +9,11 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost } from '@nestjs/core';
 import * as Sentry from '@sentry/node';
-import { PRODUCTION_ENV, STAGING_ENV } from '../configs/constants';
+import {
+  DEVELOPMENT_ENV,
+  PRODUCTION_ENV,
+  STAGING_ENV,
+} from '../configs/constants';
 import { RequestInterface } from '../types/request.interface';
 
 @Catch()
@@ -37,6 +41,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const isLive = [PRODUCTION_ENV, STAGING_ENV].includes(
       this.configService.get('env'),
     );
+    const isDevelopment = [DEVELOPMENT_ENV].includes(
+      this.configService.get('env'),
+    );
     const { httpAdapter } = this.httpAdapterHost;
     const ctx = host.switchToHttp();
     const request: RequestInterface = ctx.getRequest();
@@ -59,7 +66,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     if (isLive) {
       Sentry.captureException(exception);
-    } else {
+    } else if (isDevelopment) {
       Logger.error(responseBody);
     }
 

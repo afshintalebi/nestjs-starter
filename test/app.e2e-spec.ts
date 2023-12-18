@@ -1,17 +1,12 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { createNestApplication, stopMongoDbServer } from './test-utils';
+import { createNestApplication } from './test-utils';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
     app = await createNestApplication();
-  });
-
-  afterEach(async () => {
-    await stopMongoDbServer();
   });
 
   it('/ (GET)', () => {

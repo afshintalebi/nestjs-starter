@@ -42,12 +42,17 @@ export class AuthCommonService implements OnApplicationBootstrap {
     }
   }
 
+  // TODO check unit test due the new changes, vlidate email and password before checking in the DB
   async checkUser(email: string, password: string): Promise<UserDocument> {
     const throwError = () => {
       throw new UnauthorizedException(
         this.utilsService.t('errors.INVALID_AUTHENTICATION'),
       );
     };
+
+    if(!(email && password) || !this.utilsService.isValidEmail(email)) {
+      throwError()
+    }
 
     // check email & password
     const user = await this.userService.getUserByEmail(email);

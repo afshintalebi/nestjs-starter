@@ -5,6 +5,7 @@ import * as randomNumber from 'random-number';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { I18nContext, I18nService } from 'nestjs-i18n';
+import * as EmailValidator from 'email-validator';
 import { randomBytes, scryptSync, timingSafeEqual } from 'crypto';
 import { GeneralResponse } from '@/shared/entities/general-response';
 import {
@@ -20,7 +21,7 @@ export class UtilsService {
   constructor(
     private readonly configService: ConfigService,
     private readonly i18nService: I18nService,
-  ) {}
+  ) { }
 
   isValidObjectId(stringId: string): boolean {
     return isValidObjectId(stringId);
@@ -138,6 +139,11 @@ export class UtilsService {
     comparedDate: moment.Moment | string;
   }) {
     return moment(sourceDate).isAfter(comparedDate);
+  }
+
+  // TODO add unit test
+  isValidEmail(value: string): boolean {
+    return EmailValidator.validate(value);
   }
 
   t(key: string): string {
