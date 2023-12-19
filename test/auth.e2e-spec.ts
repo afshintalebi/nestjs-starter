@@ -203,4 +203,46 @@ describe('AuthController (e2e)', () => {
       await request(app.getHttpServer()).get(v1Endpoints.signOut).set(getAuthHeaderName(), getAuthHeaderValue(body.token)).expect(200);
     });
   })
+
+
+  describe('/v1/auth/reset-password (POST)', () => {
+    const endpoint = '/v1/auth/reset-password';
+    const exampleData = {
+      email: UserExample.email,
+    };
+
+    it('endpoint is valid', async () => {
+      const { status } = await request(app.getHttpServer()).patch(endpoint);
+
+      expect(status).not.toBe(404);
+    });
+
+    it('get error in empty body', async () => {
+      await request(app.getHttpServer()).patch(endpoint).expect(400);
+    });
+
+    it('email address must be valid', async () => {
+      await request(app.getHttpServer())
+        .patch(endpoint)
+        .send({ email: 'examplatgmail.com' }).expect(400);
+    });
+
+    it('email has not found', async () => {
+      const { body } = await request(app.getHttpServer())
+        .patch(endpoint)
+        .send({
+          email: exampleData.email
+        }).expect(404);
+    });
+
+    it('register reset password request', async () => {
+      await doSignUp(app, UserExample);
+
+      await request(app.getHttpServer())
+        .patch(endpoint)
+        .send({
+          email: exampleData.email
+        }).expect(200);
+    });
+  })
 });
