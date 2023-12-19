@@ -41,6 +41,11 @@ import { INestApplication, ValidationPipe, VersioningType } from '@nestjs/common
 import { Test, TestingModule } from '@nestjs/testing';
 
 let mongod;
+export const v1Endpoints = {
+  signUp: '/v1/auth/sign-up',
+  signIn: '/v1/auth/sign-in',
+  signOut: '/v1/auth/sign-out',
+}
 
 async function getMongoDbConfig() {
   mongod = await MongoMemoryServer.create();
@@ -197,3 +202,8 @@ export async function createNestApplication(): Promise<INestApplication> {
 
   return app;
 }
+
+
+export const getAuthHeaderName = () => 'Authorization';
+
+export const getAuthHeaderValue = (token) => `Bearer ${token}`;

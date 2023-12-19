@@ -1,8 +1,8 @@
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { createNestApplication } from './test-utils';
+import { createNestApplication, getAuthHeaderName, getAuthHeaderValue, v1Endpoints } from './test-utils';
 import * as UserExample from './data/user.json';
-import { doSignUp } from './common_op';
+import { doSignIn, doSignUp } from './common_op';
 import { UserEntity } from '@/shared/entities/user.entity';
 
 describe('AuthController (e2e)', () => {
@@ -126,6 +126,81 @@ describe('AuthController (e2e)', () => {
       expect(body.name).toBe(validData.name);
       expect(body.token).toBeTruthy();
       expect(body.refreshToken).toBeTruthy();
+    });
+  })
+
+  describe('/v1/auth/sign-out (GET)', () => {
+    const endpoint = '/v1/auth/sign-out';
+    const exampleData = {
+      email: UserExample.email,
+      password: UserExample.password,
+    };
+    const signUpData = { ...UserExample };
+
+    it('endpoint is valid', async () => {
+      const { status } = await request(app.getHttpServer()).get(endpoint);
+
+      expect(status).not.toBe(404);
+    });
+
+    it('token must be set in header', async () => {
+      await request(app.getHttpServer()).get(endpoint).expect(401);
+    });
+
+    it('must set JWT token on header', async () => {
+      // first doing signin
+      await doSignIn(app, signUpData, exampleData);
+
+      await request(app.getHttpServer()).get(endpoint).set("Authorization", ``).send(exampleData).expect(401);
+    });
+
+    it('do sign in', async () => {
+      // first doing signin
+      const { body } = await doSignIn(app, signUpData, exampleData);
+
+      expect(body.token).toBeTruthy();
+      await request(app.getHttpServer()).get(endpoint).set("Authorization", `Bearer ${body.token}`).send(exampleData).expect(200);
+    });
+  })
+
+  describe('/v1/auth/refresh-token (POST)', () => {
+    const endpoint = '/v1/auth/refresh-token';
+    let token, refreshToken;
+    const exampleData = {
+      email: UserExample.email,
+      password: UserExample.password,
+    };
+
+    beforeEach(async () => {
+      const { body } = await doSignIn(app, UserExample, exampleData);
+      token = body.token;
+      refreshToken = body.refreshToken;
+    })
+
+    it('endpoint is valid', async () => {
+      const { status } = await request(app.getHttpServer()).post(endpoint);
+
+      expect(status).not.toBe(404);
+    });
+
+    it('get error in empty body', async () => {
+      await request(app.getHttpServer()).post(endpoint).expect(401);
+    });
+
+    it('get unauthorized when refresh token is invalid', async () => {
+      await request(app.getHttpServer()).post(endpoint).set(getAuthHeaderName(), getAuthHeaderValue(token)).expect(401);
+    });
+
+    it('refresh token', async () => {
+      const { body } = await request(app.getHttpServer()).post(endpoint).send({ refreshToken }).expect(201);
+
+      expect(body.id).toBeTruthy();
+      expect(body.token).toBeTruthy();
+      expect(body.refreshToken).toBeTruthy();
+
+      // check new tokens
+      await request(app.getHttpServer()).post(endpoint).send({ refreshToken: body.refreshToken }).expect(201);
+      await request(app.getHttpServer()).get(v1Endpoints.signOut).set(getAuthHeaderName(), getAuthHeaderValue(body.token)).expect(200);
     });
   })
 });
