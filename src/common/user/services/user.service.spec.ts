@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { Test, TestingModule } from '@nestjs/testing';
-import { getUserModuleTestConfigs } from '@/../test/test-utils';
+import { getUserModuleTestConfigs } from 'test/inc/test-utils';
 import { UserService } from '../services/user.service';
 import { SignUpDto } from '@/shared/dto/signup.dto';
 import { UtilsService } from '@/common/utils/utils.service';

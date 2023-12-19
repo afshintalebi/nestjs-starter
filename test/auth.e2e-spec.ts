@@ -1,8 +1,8 @@
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { createNestApplication, getAuthHeaderName, getAuthHeaderValue, v1Endpoints } from './test-utils';
+import { createNestApplication, getAuthHeaderName, getAuthHeaderValue, v1Endpoints } from './inc/test-utils';
 import * as UserExample from './data/user.json';
-import { doSignIn, doSignUp } from './common_op';
+import { doingSignIn, doingSignUp } from './inc/common_op';
 import { UserEntity } from '@/shared/entities/user.entity';
 
 describe('AuthController (e2e)', () => {
@@ -14,7 +14,6 @@ describe('AuthController (e2e)', () => {
 
   describe('/v1/auth/sign-up (POST)', () => {
     const endpoint = '/v1/auth/sign-up';
-    const exampleData = { ...UserExample };
 
     it('endpoint is valid', async () => {
       const { status } = await request(app.getHttpServer()).post(endpoint);
@@ -27,42 +26,42 @@ describe('AuthController (e2e)', () => {
     });
 
     it('email must not be empty', async () => {
-      const data = { ...exampleData };
+      const data = { ...UserExample };
       data.email = '';
       await request(app.getHttpServer()).post(endpoint).send(data).expect(400);
     });
 
     it('email must be valid', async () => {
-      const data = { ...exampleData };
+      const data = { ...UserExample };
       data.email = 'testgmail.com';
       await request(app.getHttpServer()).post(endpoint).send(data).expect(400);
     });
 
     it('name must not be empty', async () => {
-      const data = { ...exampleData };
+      const data = { ...UserExample };
       data.name = '';
       await request(app.getHttpServer()).post(endpoint).send(data).expect(400);
     });
 
     it('password must not be empty', async () => {
-      const data = { ...exampleData };
+      const data = { ...UserExample };
       data.password = '';
       await request(app.getHttpServer()).post(endpoint).send(data).expect(400);
     });
 
     it('The password must contain at least one lowercase and uppercase letter, numbers, and at least one special character', async () => {
-      const data = { ...exampleData };
+      const data = { ...UserExample };
       data.password = 'sdfk34234KK';
       await request(app.getHttpServer()).post(endpoint).send(data).expect(400);
     });
 
     it('email already registered', async () => {
-      await request(app.getHttpServer()).post(endpoint).send(exampleData).expect(201);
-      await request(app.getHttpServer()).post(endpoint).send(exampleData).expect(400);
+      await request(app.getHttpServer()).post(endpoint).send(UserExample).expect(201);
+      await request(app.getHttpServer()).post(endpoint).send(UserExample).expect(400);
     });
 
     it('doing signup', async () => {
-      const { body } = await request(app.getHttpServer()).post(endpoint).send(exampleData).expect(201);
+      const { body } = await request(app.getHttpServer()).post(endpoint).send(UserExample).expect(201);
 
       expect(body.result).toBe(true);
     });
@@ -70,7 +69,6 @@ describe('AuthController (e2e)', () => {
 
   describe('/v1/auth/sign-in (POST)', () => {
     const endpoint = '/v1/auth/sign-in';
-    const validData = { ...UserExample }
     const exampleData = {
       email: UserExample.email,
       password: UserExample.password,
@@ -106,7 +104,7 @@ describe('AuthController (e2e)', () => {
 
     it('wrong sign in data', async () => {
       // first doing signup
-      await doSignUp(app, validData);
+      await doingSignUp(app, UserExample);
 
       await request(app.getHttpServer()).post(endpoint).send({
         email: 'example@gmail.com',
@@ -117,13 +115,13 @@ describe('AuthController (e2e)', () => {
 
     it('do sign in', async () => {
       // first doing signup
-      await doSignUp(app, validData);
+      await doingSignUp(app, UserExample);
 
       const { body } = await request(app.getHttpServer()).post(endpoint).send(exampleData).expect(201);
 
       expect(body.id).toBeTruthy();
-      expect(body.email).toBe(validData.email);
-      expect(body.name).toBe(validData.name);
+      expect(body.email).toBe(UserExample.email);
+      expect(body.name).toBe(UserExample.name);
       expect(body.token).toBeTruthy();
       expect(body.refreshToken).toBeTruthy();
     });
@@ -135,7 +133,6 @@ describe('AuthController (e2e)', () => {
       email: UserExample.email,
       password: UserExample.password,
     };
-    const signUpData = { ...UserExample };
 
     it('endpoint is valid', async () => {
       const { status } = await request(app.getHttpServer()).get(endpoint);
@@ -149,14 +146,14 @@ describe('AuthController (e2e)', () => {
 
     it('must set JWT token on header', async () => {
       // first doing signin
-      await doSignIn(app, signUpData, exampleData);
+      await doingSignIn(app, UserExample, exampleData);
 
       await request(app.getHttpServer()).get(endpoint).set("Authorization", ``).send(exampleData).expect(401);
     });
 
     it('do sign in', async () => {
       // first doing signin
-      const { body } = await doSignIn(app, signUpData, exampleData);
+      const { body } = await doingSignIn(app, UserExample, exampleData);
 
       expect(body.token).toBeTruthy();
       await request(app.getHttpServer()).get(endpoint).set("Authorization", `Bearer ${body.token}`).send(exampleData).expect(200);
@@ -172,7 +169,7 @@ describe('AuthController (e2e)', () => {
     };
 
     beforeEach(async () => {
-      const { body } = await doSignIn(app, UserExample, exampleData);
+      const { body } = await doingSignIn(app, UserExample, exampleData);
       token = body.token;
       refreshToken = body.refreshToken;
     })
@@ -236,7 +233,7 @@ describe('AuthController (e2e)', () => {
     });
 
     it('register reset password request', async () => {
-      await doSignUp(app, UserExample);
+      await doingSignUp(app, UserExample);
 
       await request(app.getHttpServer())
         .patch(endpoint)

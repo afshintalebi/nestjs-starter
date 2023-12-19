@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserAdminService } from './user-admin.service';
-import { getUserModuleTestConfigs } from '@/../test/test-utils';
+import { getUserModuleTestConfigs } from 'test/inc/test-utils';
 
 describe('UserAdminService', () => {
   let service: UserAdminService;

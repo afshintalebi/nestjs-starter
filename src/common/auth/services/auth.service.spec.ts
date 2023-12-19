@@ -6,7 +6,7 @@ import { UtilsService } from '@/common/utils/utils.service';
 import {
   getAuthModuleTestConfigs,
   stopMongoDbServer,
-} from '@/../test/test-utils';
+} from 'test/inc/test-utils';
 import { AuthService } from './auth.service';
 import { AuthCommonService } from './auth-common.service';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';

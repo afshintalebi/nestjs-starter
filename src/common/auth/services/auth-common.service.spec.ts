@@ -6,7 +6,7 @@ import { UtilsService } from '@/common/utils/utils.service';
 import {
   getAuthModuleTestConfigs,
   stopMongoDbServer,
-} from '@/../test/test-utils';
+} from 'test/inc/test-utils';
 import { JwtService } from '@nestjs/jwt';
 
 describe('AuthCommonService', () => {
