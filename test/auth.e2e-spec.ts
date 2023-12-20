@@ -1,9 +1,13 @@
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { createNestApplication, getAuthHeaderName, getAuthHeaderValue, v1Endpoints } from './inc/test-utils';
+import {
+  createNestApplication,
+  getAuthHeaderName,
+  getAuthHeaderValue,
+  v1Endpoints,
+} from './inc/test-utils';
 import * as UserExample from './data/user.json';
-import { doingSignIn, doingSignUp } from './inc/common_op';
-import { UserEntity } from '@/shared/entities/user.entity';
+import { doingResetPassword, doingSignIn, doingSignUp } from './inc/common_op';
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
@@ -56,12 +60,21 @@ describe('AuthController (e2e)', () => {
     });
 
     it('email already registered', async () => {
-      await request(app.getHttpServer()).post(endpoint).send(UserExample).expect(201);
-      await request(app.getHttpServer()).post(endpoint).send(UserExample).expect(400);
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .send(UserExample)
+        .expect(201);
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .send(UserExample)
+        .expect(400);
     });
 
     it('doing signup', async () => {
-      const { body } = await request(app.getHttpServer()).post(endpoint).send(UserExample).expect(201);
+      const { body } = await request(app.getHttpServer())
+        .post(endpoint)
+        .send(UserExample)
+        .expect(201);
 
       expect(body.result).toBe(true);
     });
@@ -106,18 +119,23 @@ describe('AuthController (e2e)', () => {
       // first doing signup
       await doingSignUp(app, UserExample);
 
-      await request(app.getHttpServer()).post(endpoint).send({
-        email: 'example@gmail.com',
-        password: 'kj23uksdjf',
-      }).expect(401);
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .send({
+          email: 'example@gmail.com',
+          password: 'kj23uksdjf',
+        })
+        .expect(401);
     });
-
 
     it('do sign in', async () => {
       // first doing signup
       await doingSignUp(app, UserExample);
 
-      const { body } = await request(app.getHttpServer()).post(endpoint).send(exampleData).expect(201);
+      const { body } = await request(app.getHttpServer())
+        .post(endpoint)
+        .send(exampleData)
+        .expect(201);
 
       expect(body.id).toBeTruthy();
       expect(body.email).toBe(UserExample.email);
@@ -125,7 +143,7 @@ describe('AuthController (e2e)', () => {
       expect(body.token).toBeTruthy();
       expect(body.refreshToken).toBeTruthy();
     });
-  })
+  });
 
   describe('/v1/auth/sign-out (GET)', () => {
     const endpoint = '/v1/auth/sign-out';
@@ -148,7 +166,11 @@ describe('AuthController (e2e)', () => {
       // first doing signin
       await doingSignIn(app, UserExample, exampleData);
 
-      await request(app.getHttpServer()).get(endpoint).set("Authorization", ``).send(exampleData).expect(401);
+      await request(app.getHttpServer())
+        .get(endpoint)
+        .set('Authorization', ``)
+        .send(exampleData)
+        .expect(401);
     });
 
     it('do sign in', async () => {
@@ -156,9 +178,13 @@ describe('AuthController (e2e)', () => {
       const { body } = await doingSignIn(app, UserExample, exampleData);
 
       expect(body.token).toBeTruthy();
-      await request(app.getHttpServer()).get(endpoint).set("Authorization", `Bearer ${body.token}`).send(exampleData).expect(200);
+      await request(app.getHttpServer())
+        .get(endpoint)
+        .set('Authorization', `Bearer ${body.token}`)
+        .send(exampleData)
+        .expect(200);
     });
-  })
+  });
 
   describe('/v1/auth/refresh-token (POST)', () => {
     const endpoint = '/v1/auth/refresh-token';
@@ -172,7 +198,7 @@ describe('AuthController (e2e)', () => {
       const { body } = await doingSignIn(app, UserExample, exampleData);
       token = body.token;
       refreshToken = body.refreshToken;
-    })
+    });
 
     it('endpoint is valid', async () => {
       const { status } = await request(app.getHttpServer()).post(endpoint);
@@ -185,24 +211,35 @@ describe('AuthController (e2e)', () => {
     });
 
     it('get unauthorized when refresh token is invalid', async () => {
-      await request(app.getHttpServer()).post(endpoint).set(getAuthHeaderName(), getAuthHeaderValue(token)).expect(401);
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .set(getAuthHeaderName(), getAuthHeaderValue(token))
+        .expect(401);
     });
 
     it('refresh token', async () => {
-      const { body } = await request(app.getHttpServer()).post(endpoint).send({ refreshToken }).expect(201);
+      const { body } = await request(app.getHttpServer())
+        .post(endpoint)
+        .send({ refreshToken })
+        .expect(201);
 
       expect(body.id).toBeTruthy();
       expect(body.token).toBeTruthy();
       expect(body.refreshToken).toBeTruthy();
 
       // check new tokens
-      await request(app.getHttpServer()).post(endpoint).send({ refreshToken: body.refreshToken }).expect(201);
-      await request(app.getHttpServer()).get(v1Endpoints.signOut).set(getAuthHeaderName(), getAuthHeaderValue(body.token)).expect(200);
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .send({ refreshToken: body.refreshToken })
+        .expect(201);
+      await request(app.getHttpServer())
+        .get(v1Endpoints.signOut)
+        .set(getAuthHeaderName(), getAuthHeaderValue(body.token))
+        .expect(200);
     });
-  })
+  });
 
-
-  describe('/v1/auth/reset-password (POST)', () => {
+  describe('/v1/auth/reset-password (PATCH)', () => {
     const endpoint = '/v1/auth/reset-password';
     const exampleData = {
       email: UserExample.email,
@@ -221,15 +258,17 @@ describe('AuthController (e2e)', () => {
     it('email address must be valid', async () => {
       await request(app.getHttpServer())
         .patch(endpoint)
-        .send({ email: 'examplatgmail.com' }).expect(400);
+        .send({ email: 'examplatgmail.com' })
+        .expect(400);
     });
 
     it('email has not found', async () => {
-      const { body } = await request(app.getHttpServer())
+      await request(app.getHttpServer())
         .patch(endpoint)
         .send({
-          email: exampleData.email
-        }).expect(404);
+          email: exampleData.email,
+        })
+        .expect(404);
     });
 
     it('register reset password request', async () => {
@@ -238,8 +277,87 @@ describe('AuthController (e2e)', () => {
       await request(app.getHttpServer())
         .patch(endpoint)
         .send({
-          email: exampleData.email
-        }).expect(200);
+          email: exampleData.email,
+        })
+        .expect(200);
     });
-  })
+  });
+
+  describe('/v1/auth/reset-password/confirm (PATCH)', () => {
+    const endpoint = '/v1/auth/reset-password/confirm';
+    let exampleData;
+
+    beforeEach(() => {
+      exampleData = {
+        email: UserExample.email,
+        code: null,
+        password: '123fdH$@IP',
+      };
+    });
+
+    it('endpoint is valid', async () => {
+      const { status } = await request(app.getHttpServer()).patch(endpoint);
+
+      expect(status).not.toBe(404);
+    });
+
+    it('get error in empty body', async () => {
+      await request(app.getHttpServer()).patch(endpoint).expect(400);
+    });
+
+    it('email address not found', async () => {
+      const { body } = await doingResetPassword(app, UserExample);
+
+      exampleData.code = body.code;
+      exampleData.email = 'email2@example.com';
+
+      await request(app.getHttpServer())
+        .patch(endpoint)
+        .send(exampleData)
+        .expect(404);
+    });
+
+    it('code is invalid', async () => {
+      await doingResetPassword(app, UserExample);
+
+      exampleData.code = '324682734';
+
+      await request(app.getHttpServer())
+        .patch(endpoint)
+        .send(exampleData)
+        .expect(400);
+    });
+
+    it('password is weak', async () => {
+      const { body } = await doingResetPassword(app, UserExample);
+
+      exampleData.code = body.code;
+      exampleData.password = '123456';
+
+      await request(app.getHttpServer())
+        .patch(endpoint)
+        .send(exampleData)
+        .expect(400);
+    });
+
+    it('complete reset password proccess and set new passsword', async () => {
+      const { body } = await doingResetPassword(app, UserExample);
+
+      expect(body.code).toBeTruthy();
+
+      exampleData.code = body.code;
+      const {
+        body: { result },
+      } = await request(app.getHttpServer())
+        .patch(endpoint)
+        .send(exampleData)
+        .expect(200);
+      expect(result).toBe(true);
+
+      await doingSignIn(app, null, {
+        email: exampleData.email,
+        password: exampleData.password,
+      });
+    });
+  });
 });

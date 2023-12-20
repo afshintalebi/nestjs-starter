@@ -21,7 +21,7 @@ export class UtilsService {
   constructor(
     private readonly configService: ConfigService,
     private readonly i18nService: I18nService,
-  ) { }
+  ) {}
 
   isValidObjectId(stringId: string): boolean {
     return isValidObjectId(stringId);

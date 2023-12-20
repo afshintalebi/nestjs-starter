@@ -37,7 +37,11 @@ import { AppController } from '@/app.controller';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from '@/shared/interceptors/logging.interceptor';
 import { AllExceptionsFilter } from '@/shared/filters/all-exceptions.filter';
-import { INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
+import {
+  INestApplication,
+  ValidationPipe,
+  VersioningType,
+} from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 let mongod;
@@ -45,7 +49,8 @@ export const v1Endpoints = {
   signUp: '/v1/auth/sign-up',
   signIn: '/v1/auth/sign-in',
   signOut: '/v1/auth/sign-out',
-}
+  resetPassword: '/v1/auth/reset-password',
+};
 
 async function getMongoDbConfig() {
   mongod = await MongoMemoryServer.create();
@@ -174,14 +179,12 @@ async function getAppModuleTestConfigs() {
 }
 
 export async function createNestApplication(): Promise<INestApplication> {
-  let app: INestApplication;
-
   const moduleConfigs = await getAppModuleTestConfigs();
   const moduleFixture: TestingModule = await Test.createTestingModule(
     moduleConfigs,
   ).compile();
 
-  app = moduleFixture.createNestApplication();
+  const app: INestApplication = moduleFixture.createNestApplication();
 
   app.enableCors();
   app.useGlobalPipes(
@@ -202,7 +205,6 @@ export async function createNestApplication(): Promise<INestApplication> {
 
   return app;
 }
-
 
 export const getAuthHeaderName = () => 'Authorization';
 

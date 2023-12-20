@@ -75,10 +75,7 @@ export class AuthService {
 
     return {
       ...this.utilsService.getGeneralResponse(true),
-      code:
-        this.utilsService.isDevelopmentEnv() || this.utilsService.isStagingEnv()
-          ? code
-          : undefined,
+      code: !this.utilsService.isProductionEnv() ? code : undefined,
     };
   }
 

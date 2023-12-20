@@ -50,8 +50,8 @@ export class AuthCommonService implements OnApplicationBootstrap {
       );
     };
 
-    if(!(email && password) || !this.utilsService.isValidEmail(email)) {
-      throwError()
+    if (!(email && password) || !this.utilsService.isValidEmail(email)) {
+      throwError();
     }
 
     // check email & password
