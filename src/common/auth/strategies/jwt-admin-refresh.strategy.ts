@@ -21,8 +21,6 @@ export class JwtAdminRefreshStrategy extends PassportStrategy(
     const { email } = payload;
     const user = await this.userService.getUserByEmail(email);
 
-    console.log({ user });
-
     if (!user || !user.isAdmin || !user.adminRefreshToken) {
       throw new UnauthorizedException();
     }

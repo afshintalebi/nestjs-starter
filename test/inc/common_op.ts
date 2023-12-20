@@ -34,3 +34,10 @@ export async function doingResetPassword(
     })
     .expect(200);
 }
+
+export async function doingAdminSignIn(app, data): Promise<request.Test> {
+  return request(app.getHttpServer())
+    .post(v1Endpoints.admin.signIn)
+    .send(data)
+    .expect(201);
+}

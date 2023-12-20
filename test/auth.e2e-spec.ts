@@ -173,7 +173,7 @@ describe('AuthController (e2e)', () => {
         .expect(401);
     });
 
-    it('do sign in', async () => {
+    it('do sign out', async () => {
       // first doing signin
       const { body } = await doingSignIn(app, UserExample, exampleData);
 

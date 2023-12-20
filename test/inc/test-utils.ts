@@ -50,6 +50,10 @@ export const v1Endpoints = {
   signIn: '/v1/auth/sign-in',
   signOut: '/v1/auth/sign-out',
   resetPassword: '/v1/auth/reset-password',
+  admin: {
+    signIn: '/admin/auth/sign-in',
+    signOut: '/admin/auth/sign-out',
+  },
 };
 
 async function getMongoDbConfig() {
