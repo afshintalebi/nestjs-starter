@@ -43,6 +43,9 @@ $ npm run start:prod
 # run tests
 $ npm run test
 
+# run e2e tests
+$ npm run test:e2e
+
 # compodoc
 $ npm run compodoc
 ```
@@ -52,7 +55,7 @@ $ npm run compodoc
 You can import Postman collection and environment variables through the files located in the `collections` folder. After import you can update the value of environment variables if needed.
 
 ## Tasks
-- [ ] E2E tests
-  - [ ] Jest
+- [x] E2E tests
+  - [x] Jest
   - [x] Postman
 - [x] Add docker-compose file
