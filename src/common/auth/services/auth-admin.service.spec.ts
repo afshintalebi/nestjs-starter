@@ -3,7 +3,7 @@ import { AuthAdminService } from './auth-admin.service';
 import {
   getAuthModuleTestConfigs,
   stopMongoDbServer,
-} from 'test/inc/test-utils';
+} from '../../../../test/inc/test-utils';
 import { ObjectId } from 'mongodb';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
 import { AuthCommonService } from './auth-common.service';

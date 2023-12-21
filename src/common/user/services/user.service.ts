@@ -28,7 +28,6 @@ export class UserService {
     private readonly configService: ConfigService,
   ) {}
 
-  // TODO add unit test
   async createAdmin(data: AdminUserData): Promise<UserEntity> {
     const copyOfData = { ...data };
 

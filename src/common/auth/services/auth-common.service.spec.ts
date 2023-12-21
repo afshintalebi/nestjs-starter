@@ -2,12 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ObjectId } from 'mongodb';
 import { AuthCommonService } from './auth-common.service';
 import { UserService } from '@/common/user/services/user.service';
+import { JwtService } from '@nestjs/jwt';
 import { UtilsService } from '@/common/utils/utils.service';
 import {
   getAuthModuleTestConfigs,
   stopMongoDbServer,
-} from 'test/inc/test-utils';
-import { JwtService } from '@nestjs/jwt';
+} from '../../../../test/inc/test-utils';
+import * as AdminData from '../json/admin.json';
 
 describe('AuthCommonService', () => {
   let service: AuthCommonService;
@@ -35,6 +36,46 @@ describe('AuthCommonService', () => {
     expect(service).toBeDefined();
   });
 
+  describe('initialAdminUser method', () => {
+    const userExample: any = {
+      _id: new ObjectId(),
+      email: 'sample@domain.com',
+    };
+    const passwordSample = 'pass1234';
+    let mockFn, mockFn2;
+
+    beforeEach(() => {
+      mockFn = jest
+        .spyOn(userService, 'getUserByEmail')
+        .mockResolvedValue(AdminData as any);
+      mockFn2 = jest
+        .spyOn(userService, 'createAdmin')
+        .mockImplementation();
+    });
+
+    it('should be defined', async () => {
+      expect(service.initialAdminUser).toBeDefined();
+    });
+
+    it('admin doesn\'t exist and it is going to create an admin', async () => {
+      mockFn = jest
+        .spyOn(userService, 'getUserByEmail')
+        .mockResolvedValue(null);
+
+      await expect(service.initialAdminUser());
+
+      expect(mockFn).toHaveBeenCalled();
+      expect(mockFn2).toHaveBeenCalled();
+    });
+
+    it('admin  exist and it  won\'t create the new admin', async () => {
+      await expect(service.initialAdminUser());
+
+      expect(mockFn).toHaveBeenCalled();
+      expect(mockFn2).not.toHaveBeenCalled();
+    });
+  });
+
   describe('checkUser method', () => {
     const userExample: any = {
       _id: new ObjectId(),
@@ -54,6 +95,24 @@ describe('AuthCommonService', () => {
 
     it('should be defined', async () => {
       expect(service.checkUser).toBeDefined();
+    });
+
+    it('email and password must have value', async () => {
+      await expect(
+        service.checkUser("", ""),
+      ).rejects.toThrow();
+
+      expect(mockFn).not.toHaveBeenCalled();
+      expect(mockFn2).not.toHaveBeenCalled();
+    });
+
+    it('email address hould be valid', async () => {
+      await expect(
+        service.checkUser("email23.gmail.com", passwordSample),
+      ).rejects.toThrow();
+
+      expect(mockFn).not.toHaveBeenCalled();
+      expect(mockFn2).not.toHaveBeenCalled();
     });
 
     it('email does not exist', async () => {

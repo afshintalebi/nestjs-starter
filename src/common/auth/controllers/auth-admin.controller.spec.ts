@@ -2,7 +2,7 @@ import { UtilsService } from '@/common/utils/utils.service';
 import { AuthAdminService } from '../services/auth-admin.service';
 import { AuthAdminController } from './auth-admin.controller';
 import { Test, TestingModule } from '@nestjs/testing';
-import { getAuthModuleTestConfigs } from 'test/inc/test-utils';
+import { getAuthModuleTestConfigs } from '../../../../test/inc/test-utils';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
 
 describe('AuthAdminController', () => {

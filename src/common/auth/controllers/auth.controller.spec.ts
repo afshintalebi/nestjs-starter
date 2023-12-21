@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getAuthModuleTestConfigs } from 'test/inc/test-utils';
+import { getAuthModuleTestConfigs } from '../../../../test/inc/test-utils';
 import { AuthController } from './auth.controller';
 import { AuthService } from '../services/auth.service';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';

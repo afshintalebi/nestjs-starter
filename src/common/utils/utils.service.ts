@@ -16,6 +16,7 @@ import {
 } from '@/shared/configs/constants';
 import { GetTimeParams } from './types/get-time-params.interface';
 
+// TODO add unit tests
 @Injectable()
 export class UtilsService {
   constructor(
@@ -141,7 +142,6 @@ export class UtilsService {
     return moment(sourceDate).isAfter(comparedDate);
   }
 
-  // TODO add unit test
   isValidEmail(value: string): boolean {
     return EmailValidator.validate(value);
   }

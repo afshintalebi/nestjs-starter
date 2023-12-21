@@ -1,12 +1,13 @@
 import { ObjectId } from 'mongodb';
 import { Test, TestingModule } from '@nestjs/testing';
-import { getUserModuleTestConfigs } from 'test/inc/test-utils';
+import { getUserModuleTestConfigs } from '../../../../test/inc/test-utils';
 import { UserService } from '../services/user.service';
 import { SignUpDto } from '@/shared/dto/signup.dto';
 import { UtilsService } from '@/common/utils/utils.service';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ConfigService } from '@nestjs/config';
 import { ChangePasswordDto } from '../dto/change-password.dto';
+import * as AdminData from '@/common/auth/json/admin.json';
 
 describe('UserService', () => {
   let service: UserService;
@@ -29,6 +30,34 @@ describe('UserService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('createAdmin method', () => {
+    it('should be defined', () => {
+      expect(service.createAdmin).toBeDefined();
+    });
+
+    it('should be run correctly', async () => {
+      const bodyData: SignUpDto = {
+        email: 'sample@domain.com',
+        name: 'Sample',
+        password: 'password123456',
+      };
+
+      const mockFn = jest
+        .spyOn(utilsService, 'bcrypeHash')
+        .mockImplementation();
+      const mockFn2 = jest
+        .spyOn(commandBus, 'execute')
+        .mockImplementation();
+      const mockFn3 = jest.spyOn(service, 'serializeUserData').mockImplementation();
+
+      await service.createAdmin(AdminData);
+
+      expect(mockFn).toHaveBeenCalled();
+      expect(mockFn2).toHaveBeenCalled();
+      expect(mockFn3).toHaveBeenCalled();
+    });
   });
 
   describe('create method', () => {

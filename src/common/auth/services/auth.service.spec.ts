@@ -6,7 +6,7 @@ import { UtilsService } from '@/common/utils/utils.service';
 import {
   getAuthModuleTestConfigs,
   stopMongoDbServer,
-} from 'test/inc/test-utils';
+} from '../../../../test/inc/test-utils';
 import { AuthService } from './auth.service';
 import { AuthCommonService } from './auth-common.service';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
@@ -177,8 +177,8 @@ describe('AuthService', () => {
         .mockResolvedValue(resetPassSample);
       mockFn2 = jest.spyOn(eventBus, 'publish').mockImplementation();
       mockFn3 = jest
-        .spyOn(utilsService, 'isDevelopmentEnv')
-        .mockReturnValue(true);
+        .spyOn(utilsService, 'isProductionEnv')
+        .mockReturnValue(false);
       mockFn4 = jest.spyOn(utilsService, 'isStagingEnv').mockReturnValue(false);
     });
 
@@ -194,30 +194,13 @@ describe('AuthService', () => {
       expect(mockFn).toHaveBeenCalled();
       expect(mockFn2).toHaveBeenCalled();
       expect(mockFn3).toHaveBeenCalled();
-      expect(mockFn4).not.toHaveBeenCalled();
     });
 
-    it('submit reset password request and return code in the staging mode', async () => {
+    it('submit reset password request and remove code in the production mode', async () => {
       mockFn3 = jest
-        .spyOn(utilsService, 'isDevelopmentEnv')
-        .mockReturnValue(false);
-      mockFn4 = jest.spyOn(utilsService, 'isStagingEnv').mockReturnValue(true);
+        .spyOn(utilsService, 'isProductionEnv')
+        .mockReturnValue(true);
 
-      const data = await service.resetPassword(userExample.email);
-
-      expect(data.result).toBeTruthy();
-      expect(data.code).toBe(resetPassSample.code);
-      expect(mockFn).toHaveBeenCalled();
-      expect(mockFn2).toHaveBeenCalled();
-      expect(mockFn3).toHaveBeenCalled();
-      expect(mockFn4).toHaveBeenCalled();
-    });
-
-    it('submit reset password request and code has been removed in the production or test mode', async () => {
-      mockFn3 = jest
-        .spyOn(utilsService, 'isDevelopmentEnv')
-        .mockReturnValue(false);
-      mockFn4 = jest.spyOn(utilsService, 'isStagingEnv').mockReturnValue(false);
       const data = await service.resetPassword(userExample.email);
 
       expect(data.result).toBeTruthy();
@@ -225,7 +208,6 @@ describe('AuthService', () => {
       expect(mockFn).toHaveBeenCalled();
       expect(mockFn2).toHaveBeenCalled();
       expect(mockFn3).toHaveBeenCalled();
-      expect(mockFn4).toHaveBeenCalled();
     });
   });
 
