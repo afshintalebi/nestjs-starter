@@ -40,6 +40,7 @@
     "@nestjs/terminus": "^10.0.1",
     "@nestjs/throttler": "^4.1.0",
     "@sentry/node": "^7.59.3",
+    "artillery-plugin-expect": "^2.3.3",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "cache-manager": "^5.2.3",

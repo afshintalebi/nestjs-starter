@@ -54,6 +54,11 @@ $ npm run compodoc
 
 You can import Postman collection and environment variables through the files located in the `collections` folder. After import you can update the value of environment variables if needed.
 
+## Artillery
+Artillery is an open-source, modern, and powerful performance testing toolkit. It is designed to help developers and testers simulate heavy loads on web applications, APIs, and other services. Artillery allows you to define test scenarios using a simple configuration in YML file, enabling you to simulate various user behaviors, such as making HTTP requests, establishing WebSocket connections, or handling different protocols.
+
+You can see some examples of its usage in the [./Artillery](./artillery) folder.
+
 ## Tasks
 - [x] E2E tests
   - [x] Jest

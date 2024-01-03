@@ -1,0 +1,38 @@
+config:
+  target: 'http://localhost:3001/v1'
+  phases:
+    - name: Load Testing of SignIn
+      duration: 30
+      arrivalRate: 20
+      ramsUp: 50
+  payload:
+    path: './data/users.csv'
+    order: sequence
+    # loadAll: true
+    skipHeader: true
+    delimiter: ','
+    skipEmptyLines: true
+    fields:
+      - 'email'
+      - 'password'
+  http:
+    defaults:
+      headers:
+        accept-language: en
+scenarios:
+  - name: SignIn
+    flow:
+      - post:
+          url: '/auth/sign-in'
+          headers:
+            Content-Type: 'application/json'
+          json:
+            email: '{{ email }}'
+            password: '{{ password }}'
+          capture:
+            - json: 'email'
+              as: 'userEmail'
+            - json: 'token'
+              as: 'userToken'
+            - json: 'refreshToken'
+              as: 'userRefreshToken'

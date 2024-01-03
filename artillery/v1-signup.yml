@@ -1,0 +1,45 @@
+config:
+  target: 'http://localhost:3001/v1'
+  plugins:
+    expect: {}
+  phases:
+    - name: Smoke Testing
+      duration: 1
+      arrivalCount: 2
+  payload:
+    path: './data/users.csv'
+    order: sequence
+    loadAll: true
+    skipHeader: true
+    delimiter: ','
+    skipEmptyLines: true
+    fields:
+      - 'email'
+      - 'password'
+      - 'name'
+  http:
+    defaults:
+      headers:
+        accept-language: en
+scenarios:
+  - name: SignUp
+    flow:
+      - post:
+          url: '/auth/sign-up'
+          headers:
+            Content-Type: 'application/json'
+          json:
+            email: '{{ email }}'
+            password: '{{ password }}'
+            name: '{{ name }}'
+          capture:
+            json: 'result'
+            as: 'signUpResult'
+          expect:
+            - statusCode: 201
+            - contentType: json
+            - hasProperty: result
+            - equals:
+                - true
+                - "{{ signUpResult }}"
+      - log: 'Result of signup: {{ signUpResult }}'

@@ -1,0 +1,37 @@
+config:
+  target: 'http://localhost:3001'
+
+  environments:
+    test:
+      phases:
+        # hold request for 10 seconds
+        - name: Hold Request
+          pause: 10
+    load-constatnt:
+      phases:
+        # inject 10 virtual users every seconds for 60 seconds
+        - name: Constant adding users
+          duration: 60
+          arrivalRate: 10
+    load-ramp:
+      phases:
+        # ramp ups virtual users from 10 to 50 in 60 seconds
+        - name: Ramp up users
+          duration: 60
+          arrivalRate: 10
+          rampTo: 50
+    load-fixed-amount:
+      phases:
+        # create fixed amount of virtual users in 60 seconds
+        - name: Fixed amount of  users
+          duration: 60
+          arrivalCount: 130
+  http:
+    defaults:
+      headers:
+        accept-language: en
+scenarios:
+  - name: API Version 1
+    flow:
+      - get:
+          url: '/v1'
